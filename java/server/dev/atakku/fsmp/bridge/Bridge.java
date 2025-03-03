@@ -60,7 +60,18 @@ public class Bridge implements DedicatedServerModInitializer {
 
   public static final String CHANNEL_ID = System.getenv("DISCORD_CHANNEL_ID");
   public static final String OWNER = System.getenv("DISCORD_OWNER_ID");
-  public static final JDAWebhookClient WEBHOOK = new WebhookClientBuilder(System.getenv("DISCORD_WEBHOOK")).buildJDA();
+
+  public static final JDAWebhookClient WEBHOOK;
+  static {
+    String THREAD_ID = System.getenv("DISCORD_THREAD_ID");
+    JDAWebhookClient HOOK = new WebhookClientBuilder(System.getenv("DISCORD_WEBHOOK")).buildJDA();
+    if (!THREAD_ID.isEmpty()) {
+      WEBHOOK = HOOK.onThread(Long.parseLong(THREAD_ID));
+    } else {
+      WEBHOOK = HOOK;
+    }
+  }
+
   public static final JDA JDA = JDABuilder.createDefault(System.getenv("DISCORD_TOKEN"))
       .enableIntents(GatewayIntent.MESSAGE_CONTENT)
       .enableIntents(GatewayIntent.GUILD_MEMBERS)
@@ -71,7 +82,7 @@ public class Bridge implements DedicatedServerModInitializer {
             DISCORD_CACHE.put(m.getId(), m);
           });
         }
-        
+
         public void onGuildMemberUpdate(GuildMemberUpdateEvent e) {
           DISCORD_CACHE.put(e.getMember().getId(), e.getMember());
         }
