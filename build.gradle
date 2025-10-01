@@ -1,0 +1,34 @@
+// Copyright 2025 Atakku <https://atakku.dev>
+//
+// This project is dual licensed under MIT and Apache.
+
+apply from: 'https://raw.githubusercontent.com/Atakku/gradle/v51/neoforge_build.gradle'
+
+project(':server').repositories {
+  mavenCentral()
+}
+
+project(':server').dependencies {
+  jarJar(implementation("com.vdurmont:emoji-java:5.1.1"))
+  jarJar(implementation("net.dv8tion:JDA:$jda_version"){
+    exclude module: 'opus-java'
+    exclude module: 'slf4j-api'
+  })
+  //include "com.google.code.findbugs:jsr305:3.0.2"
+  //include "org.jetbrains:annotations:23.0.0"
+  jarJar(implementation("com.neovisionaries:nv-websocket-client:2.14"))
+  jarJar(implementation("com.squareup.okio:okio:3.0.0"))
+  jarJar(implementation("com.squareup.okio:okio-jvm:3.0.0"))
+  jarJar(implementation("org.apache.commons:commons-collections4:4.4"))
+  jarJar(implementation("net.sf.trove4j:trove4j:3.0.3"))
+  jarJar(implementation("com.fasterxml.jackson.core:jackson-databind:2.13.1"))
+  jarJar(implementation("com.fasterxml.jackson.core:jackson-annotations:2.13.1"))
+  jarJar(implementation("com.fasterxml.jackson.core:jackson-core:2.13.1"))
+
+  jarJar(implementation("club.minnced:discord-webhooks:$dw_version"){
+    exclude module: 'slf4j-api'
+  }) 
+
+  jarJar(implementation("com.squareup.okhttp3:okhttp:4.10.0"))
+  jarJar(implementation("org.json:json:20210307"))
+}
