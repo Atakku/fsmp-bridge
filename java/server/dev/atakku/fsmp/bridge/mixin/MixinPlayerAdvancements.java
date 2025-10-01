@@ -22,7 +22,7 @@ abstract class MixinPlayerAdvancements {
   @Shadow
   ServerPlayer player;
 
-  @Inject(method = "Lnet/minecraft/server/PlayerAdvancements;award(Lnet/minecraft/advancements/AdvancementHolder;Ljava/lang/String;)Z", at = @At(value = "INVOKE", target="Lnet/minecraft/server/PlayerManager;broadcast(Lnet/minecraft/network/chat/Component;Z)V"))
+  @Inject(method = "Lnet/minecraft/server/PlayerAdvancements;award(Lnet/minecraft/advancements/AdvancementHolder;Ljava/lang/String;)Z", at = @At(value = "INVOKE", target="Lnet/minecraft/server/players/PlayerList;broadcastSystemMessage(Lnet/minecraft/network/chat/Component;Z)V"))
   private void award(AdvancementHolder adve, String criterionName, CallbackInfoReturnable<Boolean> cir) {
     if (adve == null) {
       return;
