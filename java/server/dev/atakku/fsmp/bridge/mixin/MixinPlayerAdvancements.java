@@ -20,7 +20,7 @@ import dev.atakku.fsmp.bridge.Bridge;
 @Mixin(PlayerAdvancements.class)
 abstract class MixinPlayerAdvancements {
   @Shadow
-  ServerPlayer owner;
+  ServerPlayer player;
 
   @Inject(method = "Lnet/minecraft/server/PlayerAdvancements;award(Lnet/minecraft/advancements/AdvancementHolder;Ljava/lang/String;)Z", at = @At(value = "INVOKE", target="Lnet/minecraft/server/PlayerManager;broadcast(Lnet/minecraft/network/chat/Component;Z)V"))
   private void award(AdvancementHolder adve, String criterionName, CallbackInfoReturnable<Boolean> cir) {
@@ -29,7 +29,7 @@ abstract class MixinPlayerAdvancements {
     }
     Advancement adv = adve.value();
     if (adv != null && adv.display() != null && adv.display().isPresent() && adv.display().get().shouldAnnounceChat()) {
-      Bridge.onPlayerAdvancement(owner, adv);
+      Bridge.onPlayerAdvancement(player, adv);
     }
   }
 }
