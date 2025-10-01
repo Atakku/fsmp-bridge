@@ -14,8 +14,7 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
-import net.minecraft.advancements.Advancement;
-import net.minecraft.advancements.DisplayInfo;
+import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.network.chat.ChatType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.OutgoingChatMessage;
@@ -25,6 +24,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.GameRules;
 
 import club.minnced.discord.webhook.WebhookClientBuilder;
 import club.minnced.discord.webhook.external.JDAWebhookClient;
@@ -213,22 +213,26 @@ public class Bridge {
     sendPlayerText(player, parseCustom(msg.decoratedContent().getString()));
   }
 
-  public static void onPlayerAdvancement(ServerPlayer player, Advancement adv) {
-    DisplayInfo disp = adv.display().get();
-    switch (disp.getType()) {
-      case TASK:
-        sendSystemText("✨ **%s** has made the advancement **[%s]**", pingOrFallback(player),
-            disp.getTitle().getString());
-        break;
-      case CHALLENGE:
-        sendSystemText("🎉 %s has completed the challenge **[%s]**", pingOrFallback(player),
-            disp.getTitle().getString());
-        break;
-      case GOAL:
-        sendSystemText("🎊 **%s** has reached the goal **[%s]**", pingOrFallback(player),
-            disp.getTitle().getString());
-        break;
-    }
+  @SubscribeEvent
+  public static void onPlayerAdvancement(ServerPlayer player, AdvancementHolder ah) {
+    ah.value().display().ifPresent(disp -> {
+      if (disp.shouldAnnounceChat() && player.level().getGameRules().getBoolean(GameRules.RULE_ANNOUNCE_ADVANCEMENTS)) {
+        switch (disp.getType()) {
+          case TASK:
+            sendSystemText("✨ **%s** has made the advancement **[%s]**", pingOrFallback(player),
+                disp.getTitle().getString());
+            break;
+          case CHALLENGE:
+            sendSystemText("🎉 %s has completed the challenge **[%s]**", pingOrFallback(player),
+                disp.getTitle().getString());
+            break;
+          case GOAL:
+            sendSystemText("🎊 **%s** has reached the goal **[%s]**", pingOrFallback(player),
+                disp.getTitle().getString());
+            break;
+        }
+      }
+    });
   }
 
   public static void onPlayerDeath(ServerPlayer player, DamageSource source) {
