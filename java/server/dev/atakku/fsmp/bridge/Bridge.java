@@ -49,7 +49,9 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 import net.neoforged.neoforge.event.server.ServerStoppingEvent;
@@ -161,12 +163,9 @@ public class Bridge {
   public Bridge(IEventBus bus) {
     LOGGER.info("Initializing FSMP Bridge");
     sendSystemText("🟡 Server is starting");
-
-    bus.addListener(this::onServerStart);
-    bus.addListener(this::onServerStopping);
-    bus.addListener(this::onServerStopped);
   }
 
+  @SubscribeEvent
   private void onServerStart(ServerStartedEvent event) {
     sendSystemText("🟢 Server started");
     JDA.addEventListener(new ListenerAdapter() {
@@ -192,10 +191,12 @@ public class Bridge {
     });
   }
 
+  @SubscribeEvent
   private void onServerStopping(ServerStoppingEvent event) {
     sendSystemText("🔴 Server is stopping");
   }
 
+  @SubscribeEvent
   private void onServerStopped(ServerStoppedEvent event) {
     sendSystemText("🛑 Server stopped");
     JDA.shutdown();
