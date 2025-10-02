@@ -166,7 +166,7 @@ public class Bridge {
     NeoForge.EVENT_BUS.addListener(this::onServerStart);
     NeoForge.EVENT_BUS.addListener(this::onServerStopping);
     NeoForge.EVENT_BUS.addListener(this::onServerStopped);
-    bus.addListener(this::onPlayerAdvancement);
+    NeoForge.EVENT_BUS.addListener(this::onPlayerAdvancement);
   }
 
   private void onServerStart(ServerStartedEvent event) {
@@ -215,7 +215,7 @@ public class Bridge {
     sendPlayerText(player, parseCustom(msg.decoratedContent().getString()));
   }
 
-  private void onPlayerAdvancement(AdvancementEarnEvent event) {
+  private void onPlayerAdvancement(final AdvancementEarnEvent event) {
     if (event.getEntity() instanceof ServerPlayer player) {
       event.getAdvancement().value().display().ifPresent(disp -> {
         if (disp.shouldAnnounceChat()
