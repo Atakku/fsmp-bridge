@@ -34,7 +34,7 @@ abstract class MixinPlayerList {
     cir.cancel();
   }
 
-  @Inject(method = "Lnet/minecraft/server/players/PlayerList;placeNewPlayer(Lnet/minecraft/network/Connection;Lnet/minecraft/server/network/ServerPlayer;Lnet/minecraft/server/network/ConnectedClientData;)V", at = @At("TAIL"))
+  @Inject(method = "Lnet/minecraft/server/players/PlayerList;placeNewPlayer(Lnet/minecraft/network/Connection;Lnet/minecraft/server/network/ServerPlayer;Lnet/minecraft/server/network/CommonListenerCookie;)V", at = @At("TAIL"))
   private void placeNewPlayer(Connection connection, ServerPlayer player, CommonListenerCookie ccd,
       CallbackInfo info) {
     Bridge.onPlayerJoin(player, player.getStats().getValue(Stats.CUSTOM.get(Stats.LEAVE_GAME)) < 1);
