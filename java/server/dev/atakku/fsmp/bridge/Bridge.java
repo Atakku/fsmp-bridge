@@ -14,7 +14,6 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
-import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.network.chat.ChatType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.OutgoingChatMessage;
@@ -49,8 +48,9 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.entity.player.AdvancementEvent.AdvancementEarnEvent;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 import net.neoforged.neoforge.event.server.ServerStoppingEvent;
@@ -162,9 +162,13 @@ public class Bridge {
   public Bridge(IEventBus bus) {
     LOGGER.info("Initializing FSMP Bridge");
     sendSystemText("🟡 Server is starting");
+
+    NeoForge.EVENT_BUS.addListener(this::onServerStart);
+    NeoForge.EVENT_BUS.addListener(this::onServerStopping);
+    NeoForge.EVENT_BUS.addListener(this::onServerStopped);
+    bus.addListener(this::onPlayerAdvancement);
   }
 
-  @SubscribeEvent
   private void onServerStart(ServerStartedEvent event) {
     sendSystemText("🟢 Server started");
     JDA.addEventListener(new ListenerAdapter() {
@@ -190,12 +194,10 @@ public class Bridge {
     });
   }
 
-  @SubscribeEvent
   private void onServerStopping(ServerStoppingEvent event) {
     sendSystemText("🔴 Server is stopping");
   }
 
-  @SubscribeEvent
   private void onServerStopped(ServerStoppedEvent event) {
     sendSystemText("🛑 Server stopped");
     JDA.shutdown();
@@ -213,26 +215,28 @@ public class Bridge {
     sendPlayerText(player, parseCustom(msg.decoratedContent().getString()));
   }
 
-  @SubscribeEvent
-  public static void onPlayerAdvancement(ServerPlayer player, AdvancementHolder ah) {
-    ah.value().display().ifPresent(disp -> {
-      if (disp.shouldAnnounceChat() && player.level().getGameRules().getBoolean(GameRules.RULE_ANNOUNCE_ADVANCEMENTS)) {
-        switch (disp.getType()) {
-          case TASK:
-            sendSystemText("✨ **%s** has made the advancement **[%s]**", pingOrFallback(player),
-                disp.getTitle().getString());
-            break;
-          case CHALLENGE:
-            sendSystemText("🎉 %s has completed the challenge **[%s]**", pingOrFallback(player),
-                disp.getTitle().getString());
-            break;
-          case GOAL:
-            sendSystemText("🎊 **%s** has reached the goal **[%s]**", pingOrFallback(player),
-                disp.getTitle().getString());
-            break;
+  private void onPlayerAdvancement(AdvancementEarnEvent event) {
+    if (event.getEntity() instanceof ServerPlayer player) {
+      event.getAdvancement().value().display().ifPresent(disp -> {
+        if (disp.shouldAnnounceChat()
+            && player.level().getGameRules().getBoolean(GameRules.RULE_ANNOUNCE_ADVANCEMENTS)) {
+          switch (disp.getType()) {
+            case TASK:
+              sendSystemText("✨ **%s** has made the advancement **[%s]**", pingOrFallback(player),
+                  disp.getTitle().getString());
+              break;
+            case CHALLENGE:
+              sendSystemText("🎉 %s has completed the challenge **[%s]**", pingOrFallback(player),
+                  disp.getTitle().getString());
+              break;
+            case GOAL:
+              sendSystemText("🎊 **%s** has reached the goal **[%s]**", pingOrFallback(player),
+                  disp.getTitle().getString());
+              break;
+          }
         }
-      }
-    });
+      });
+    }
   }
 
   public static void onPlayerDeath(ServerPlayer player, DamageSource source) {
