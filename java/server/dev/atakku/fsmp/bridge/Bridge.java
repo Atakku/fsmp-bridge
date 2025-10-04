@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 import net.minecraft.network.chat.ChatType;
@@ -200,9 +201,10 @@ public class Bridge {
 
   private void onServerStopped(ServerStoppedEvent event) {
     sendSystemText("🛑 Server stopped");
+    WEBHOOK.close();
     JDA.shutdown();
     try {
-      if (!JDA.awaitShutdown(10, java.util.concurrent.TimeUnit.SECONDS)) {
+      if (!JDA.awaitShutdown(10, TimeUnit.SECONDS)) {
         LOGGER.info("Bridge did not shutdown within 10 seconds, forcing shutdown.");
         JDA.shutdownNow();
       }
