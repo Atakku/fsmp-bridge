@@ -201,6 +201,16 @@ public class Bridge {
   private void onServerStopped(ServerStoppedEvent event) {
     sendSystemText("🛑 Server stopped");
     JDA.shutdown();
+    try {
+      if (!JDA.awaitShutdown(10, java.util.concurrent.TimeUnit.SECONDS)) {
+        LOGGER.info("Bridge did not shutdown within 10 seconds, forcing shutdown.");
+        JDA.shutdownNow();
+      }
+    } catch (InterruptedException e) {
+        LOGGER.info("Interrupted, forcing shutdown.");
+      JDA.shutdownNow();
+      Thread.currentThread().interrupt();
+    }
   }
 
   public static void onPlayerJoin(ServerPlayer player, boolean firstJoin) {
