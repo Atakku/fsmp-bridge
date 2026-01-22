@@ -109,9 +109,7 @@ public class Bridge {
     if (name.length() > 16) {
       name = name.substring(0, 16);
     }
-    NAME_CACHE.remove(uuid);
-    ID_CACHE.remove(uuid);
-    if (NAME_CACHE.containsValue(name)) {
+    if (NAME_CACHE.containsValue(name) && !NAME_CACHE.get(uuid).equals(name)) {
       if (name.length() >= 15) {
         name = name.substring(0, 14);
       }
@@ -119,7 +117,6 @@ public class Bridge {
           name + CHARSET.charAt(R.nextInt(CHARSET.length())) + CHARSET.charAt(R.nextInt(CHARSET.length())), id);
     }
     NAME_CACHE.put(uuid, name);
-    ID_CACHE.put(uuid, id);
     return NAME_CACHE.get(uuid);
   }
 
@@ -137,13 +134,14 @@ public class Bridge {
           String name = data[0];
           String id = data[1];
 
-          Member m = DISCORD_CACHE.get(id);
-          if (m != null) {
-            String fancy = m.getEffectiveName().replace(" ", "_").replace("__", "_").replaceAll("[^a-zA-Z0-9_.]", "");
-            if (fancy.length() > 1) {
-              name = fancy;
-            }
-          }
+          ID_CACHE.put(uuid, id);
+          //Member m = DISCORD_CACHE.get(id);
+          //if (m != null) {
+          //  String fancy = m.getEffectiveName().replace(" ", "_").replace("__", "_").replaceAll("[^a-zA-Z0-9_.]", "");
+          //  if (fancy.length() > 1) {
+          //    name = fancy;
+          //  }
+          //}
 
           return cacheName(uuid, name, id);
         }
