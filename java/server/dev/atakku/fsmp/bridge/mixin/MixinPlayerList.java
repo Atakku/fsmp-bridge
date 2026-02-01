@@ -26,11 +26,11 @@ import dev.atakku.fsmp.bridge.Bridge;
 abstract class MixinPlayerList {
   @Inject(method = "Lnet/minecraft/server/players/PlayerList;canPlayerLogin(Ljava/net/SocketAddress;Lcom/mojang/authlib/GameProfile;)Lnet/minecraft/network/chat/Component;", at = @At("HEAD"), cancellable = true)
   private void canPlayerLogin(SocketAddress address, GameProfile profile, CallbackInfoReturnable<Component> cir) {
-    if (Bridge.getUserData(profile.getId(), true) != null) {
+    if (Bridge.getUserData(profile.getId()) != null) {
       return;
     }
     cir.setReturnValue(Component.literal(
-        "You need to link your account on https://link.neko.rs and be verified on fem.place to play on this server"));
+        "You need to link your account on https://link.neko.rs to play on this server"));
     cir.cancel();
   }
 

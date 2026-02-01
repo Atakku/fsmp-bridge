@@ -120,38 +120,28 @@ public class Bridge {
     return NAME_CACHE.get(uuid);
   }
 
-  public static String getUserData(UUID uuid, boolean force) {
+  public static String getUserData(UUID uuid) {
     if (uuid == null)
       return null;
-    if (force || !NAME_CACHE.containsKey(uuid)) {
-      try {
-        URL url = new URI("https://link.neko.rs/whitelist?uuid=" + uuid.toString()).toURL();
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setRequestMethod("GET");
-        if (conn.getResponseCode() == 200) {
-          String[] data = IOUtils.toString(conn.getInputStream(), "UTF-8").split("\n");
+    try {
+      URL url = new URI("https://link.neko.rs/whitelist?uuid=" + uuid.toString()).toURL();
+      HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+      conn.setRequestMethod("GET");
+      if (conn.getResponseCode() == 200) {
+        String[] data = IOUtils.toString(conn.getInputStream(), "UTF-8").split("\n");
 
-          String name = data[0];
-          String id = data[1];
+        String name = data[0];
+        String id = data[1];
 
-          ID_CACHE.put(uuid, id);
-          //Member m = DISCORD_CACHE.get(id);
-          //if (m != null) {
-          //  String fancy = m.getEffectiveName().replace(" ", "_").replace("__", "_").replaceAll("[^a-zA-Z0-9_.]", "");
-          //  if (fancy.length() > 1) {
-          //    name = fancy;
-          //  }
-          //}
-
-          return cacheName(uuid, name, id);
-        }
-      } catch (Exception ex) {
-        Bridge.LOGGER.error(ex.getMessage());
-        ex.printStackTrace();
+        ID_CACHE.put(uuid, id);
+        return cacheName(uuid, name, id);
       }
-      if (!NAME_CACHE.containsKey(uuid)) {
-        NAME_CACHE.put(uuid, null);
-      }
+    } catch (Exception ex) {
+      Bridge.LOGGER.error(ex.getMessage());
+      ex.printStackTrace();
+    }
+    if (!NAME_CACHE.containsKey(uuid)) {
+      NAME_CACHE.put(uuid, null);
     }
     return NAME_CACHE.get(uuid);
   }

@@ -4,9 +4,10 @@
   "compatibilityLevel": "JAVA_21",
   "client": [],
   "mixins": [
-    "MixinGameProfile",
+    "AccessorGameProfile",
     "MixinPlayerList",
     "MixinServerGamePacketListenerImpl",
+    "MixinServerLoginPacketListenerImpl",
     "MixinServerPlayer"
   ],
   "injectors": {
