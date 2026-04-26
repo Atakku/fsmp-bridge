@@ -2,7 +2,7 @@
 //
 // This project is dual licensed under MIT and Apache.
 
-package hrt.zone.bridge;
+package zone.hrt.bridge;
 
 import java.net.HttpURLConnection;
 import java.net.URI;

@@ -2,7 +2,7 @@
 //
 // This project is dual licensed under MIT and Apache.
 
-package hrt.zone.bridge.mixin;
+package zone.hrt.bridge.mixin;
 
 import java.net.SocketAddress;
 
@@ -14,12 +14,12 @@ import net.minecraft.server.players.PlayerList;
 import net.minecraft.stats.Stats;
 
 import com.mojang.authlib.GameProfile;
-import hrt.zone.bridge.Bridge;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import zone.hrt.bridge.Bridge;
 
 @Mixin(PlayerList.class)
 abstract class MixinPlayerList {

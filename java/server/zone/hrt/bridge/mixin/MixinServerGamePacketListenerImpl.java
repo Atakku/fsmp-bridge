@@ -2,19 +2,19 @@
 //
 // This project is dual licensed under MIT and Apache.
 
-package hrt.zone.bridge.mixin;
+package zone.hrt.bridge.mixin;
 
 import net.minecraft.network.DisconnectionDetails;
 import net.minecraft.network.chat.PlayerChatMessage;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 
-import hrt.zone.bridge.Bridge;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import zone.hrt.bridge.Bridge;
 
 @Mixin(ServerGamePacketListenerImpl.class)
 abstract class MixinServerGamePacketListenerImpl {

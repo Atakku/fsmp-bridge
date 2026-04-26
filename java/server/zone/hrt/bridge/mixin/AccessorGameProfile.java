@@ -2,7 +2,7 @@
 //
 // This project is dual licensed under MIT and Apache.
 
-package hrt.zone.bridge.mixin;
+package zone.hrt.bridge.mixin;
 
 import com.mojang.authlib.GameProfile;
 import org.spongepowered.asm.mixin.Mixin;
