@@ -1,6 +1,6 @@
 {
   "required": true,
-  "package": "dev.atakku.fsmp.bridge.mixin",
+  "package": "zone.hrt.bridge.mixin",
   "compatibilityLevel": "JAVA_21",
   "client": [],
   "mixins": [

@@ -1,8 +1,8 @@
-// Copyright 2025 Atakku <https://atakku.dev>
+// Copyright 2026 Atakku <https://atakku.dev>
 //
 // This project is dual licensed under MIT and Apache.
 
-package dev.atakku.fsmp.bridge.mixin;
+package hrt.zone.bridge.mixin;
 
 import java.net.SocketAddress;
 
@@ -14,13 +14,12 @@ import net.minecraft.server.players.PlayerList;
 import net.minecraft.stats.Stats;
 
 import com.mojang.authlib.GameProfile;
+import hrt.zone.bridge.Bridge;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-
-import dev.atakku.fsmp.bridge.Bridge;
 
 @Mixin(PlayerList.class)
 abstract class MixinPlayerList {
@@ -29,8 +28,9 @@ abstract class MixinPlayerList {
     if (Bridge.getUserData(profile.getId()) != null) {
       return;
     }
+
     cir.setReturnValue(Component.literal(
-        "You need to link your account on https://link.neko.rs to play on this server"));
+        "You need to sign up on https://hrt.zone and be approved on the Discord server"));
     cir.cancel();
   }
 

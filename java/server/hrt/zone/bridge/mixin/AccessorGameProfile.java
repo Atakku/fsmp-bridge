@@ -1,8 +1,8 @@
-// Copyright 2025 Atakku <https://atakku.dev>
+// Copyright 2026 Atakku <https://atakku.dev>
 //
 // This project is dual licensed under MIT and Apache.
 
-package dev.atakku.fsmp.bridge.mixin;
+package hrt.zone.bridge.mixin;
 
 import com.mojang.authlib.GameProfile;
 import org.spongepowered.asm.mixin.Mixin;

@@ -1,0 +1,49 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "request": "launch",
+      "name": "server - Client",
+      "presentation": {
+        "group": "Mod Development - server",
+        "order": 0
+      },
+      "projectName": "server",
+      "mainClass": "net.neoforged.devlaunch.Main",
+      "args": [
+        "@/home/atakku/Code/atakku@github.com/fsmp-bridge/.gradle/projects/server/build/moddev/clientRunProgramArgs.txt"
+      ],
+      "vmArgs": [
+        "@/home/atakku/Code/atakku@github.com/fsmp-bridge/.gradle/projects/server/build/moddev/clientRunVmArgs.txt",
+        "-Dfml.modFolders\u003dfsmp_bridge%%/home/atakku/Code/atakku@github.com/fsmp-bridge/.gradle/projects/server/bin/main"
+      ],
+      "cwd": "${workspaceFolder}/.gradle/projects/server/run",
+      "env": {},
+      "console": "internalConsole",
+      "shortenCommandLine": "none"
+    },
+    {
+      "type": "java",
+      "request": "launch",
+      "name": "server - Server",
+      "presentation": {
+        "group": "Mod Development - server",
+        "order": 1
+      },
+      "projectName": "server",
+      "mainClass": "net.neoforged.devlaunch.Main",
+      "args": [
+        "@/home/atakku/Code/atakku@github.com/fsmp-bridge/.gradle/projects/server/build/moddev/serverRunProgramArgs.txt"
+      ],
+      "vmArgs": [
+        "@/home/atakku/Code/atakku@github.com/fsmp-bridge/.gradle/projects/server/build/moddev/serverRunVmArgs.txt",
+        "-Dfml.modFolders\u003dfsmp_bridge%%/home/atakku/Code/atakku@github.com/fsmp-bridge/.gradle/projects/server/bin/main"
+      ],
+      "cwd": "${workspaceFolder}/.gradle/projects/server/run",
+      "env": {},
+      "console": "internalConsole",
+      "shortenCommandLine": "none"
+    }
+  ]
+}

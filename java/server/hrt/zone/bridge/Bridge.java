@@ -1,8 +1,8 @@
-// Copyright 2025 Atakku <https://atakku.dev>
+// Copyright 2026 Atakku <https://atakku.dev>
 //
 // This project is dual licensed under MIT and Apache.
 
-package dev.atakku.fsmp.bridge;
+package hrt.zone.bridge;
 
 import java.net.HttpURLConnection;
 import java.net.URI;
@@ -33,18 +33,12 @@ import club.minnced.discord.webhook.send.WebhookEmbedBuilder;
 import club.minnced.discord.webhook.send.WebhookMessageBuilder;
 import com.vdurmont.emoji.EmojiParser;
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
-import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.Message.Attachment;
 import net.dv8tion.jda.api.entities.emoji.RichCustomEmoji;
-import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
-import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
-import net.dv8tion.jda.api.events.guild.member.GuildMemberUpdateEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.GatewayIntent;
@@ -61,7 +55,7 @@ import org.slf4j.LoggerFactory;
 
 @Mod(Bridge.MOD_ID)
 public class Bridge {
-  public static final String MOD_ID = "fsmp_bridge";
+  public static final String MOD_ID = "hrt_bridge";
   public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
   public static final String CHANNEL_ID = System.getenv("DISCORD_CHANNEL_ID");
@@ -80,29 +74,13 @@ public class Bridge {
 
   public static final JDA JDA = JDABuilder.createDefault(System.getenv("DISCORD_TOKEN"))
       .enableIntents(GatewayIntent.MESSAGE_CONTENT)
-      .enableIntents(GatewayIntent.GUILD_MEMBERS)
-      .addEventListeners(new ListenerAdapter() {
-        @Override
-        public void onGuildReady(GuildReadyEvent e) {
-          e.getGuild().loadMembers(m -> {
-            DISCORD_CACHE.put(m.getId(), m);
-          });
-        }
-
-        public void onGuildMemberUpdate(GuildMemberUpdateEvent e) {
-          DISCORD_CACHE.put(e.getMember().getId(), e.getMember());
-        }
-
-        public void onGuildMemberJoin(GuildMemberJoinEvent e) {
-          DISCORD_CACHE.put(e.getMember().getId(), e.getMember());
-        }
-      })
       .build();
 
   private static String CHARSET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_.";
 
   private static HashMap<UUID, String> NAME_CACHE = new HashMap<>();
   private static HashMap<UUID, String> ID_CACHE = new HashMap<>();
+
   private static Random R = new Random();
 
   private static String cacheName(UUID uuid, String name, String id) {
@@ -124,7 +102,7 @@ public class Bridge {
     if (uuid == null)
       return null;
     try {
-      URL url = new URI("https://link.neko.rs/whitelist?uuid=" + uuid.toString()).toURL();
+      URL url = new URI("https://hrt.zone/whitelist?uuid=" + uuid.toString()).toURL();
       HttpURLConnection conn = (HttpURLConnection) url.openConnection();
       conn.setRequestMethod("GET");
       if (conn.getResponseCode() == 200) {
@@ -145,8 +123,6 @@ public class Bridge {
     }
     return NAME_CACHE.get(uuid);
   }
-
-  private static Object2ObjectOpenHashMap<String, Member> DISCORD_CACHE = new Object2ObjectOpenHashMap<>();
 
   public Bridge(IEventBus bus) {
     LOGGER.info("Initializing FSMP Bridge");
@@ -173,9 +149,10 @@ public class Bridge {
               text += "Replying to " + m.getAuthor().getEffectiveName() + ": ";
           }
           text += EmojiParser.parseToAliases(e.getMessage().getContentDisplay());
-          for (Attachment at : e.getMessage().getAttachments()) {
-            boolean nsfw = at.getFileName().startsWith("SPOILER_");
-            text += " [[CICode,url=" + at.getUrl() + ",name=" + at.getFileName() + ",nsfw=" + nsfw + "]]";
+          if (e.getMessage().getAttachments().size() > 0) {
+            text += " [Attachment]";
+          } else if (e.getMessage().getAttachments().size() > 1) {
+            text += " [Attachments]";
           }
           broadcastMessage(event.getServer(), e.getMessage().getAuthor().getEffectiveName(), text);
         }
@@ -197,7 +174,7 @@ public class Bridge {
         JDA.shutdownNow();
       }
     } catch (InterruptedException e) {
-        LOGGER.info("Interrupted, forcing shutdown.");
+      LOGGER.info("Interrupted, forcing shutdown.");
       JDA.shutdownNow();
       Thread.currentThread().interrupt();
     }
