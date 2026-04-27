@@ -10,7 +10,6 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
@@ -76,27 +75,8 @@ public class Bridge {
       .enableIntents(GatewayIntent.MESSAGE_CONTENT)
       .build();
 
-  private static String CHARSET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_.";
-
   private static HashMap<UUID, String> NAME_CACHE = new HashMap<>();
   private static HashMap<UUID, String> ID_CACHE = new HashMap<>();
-
-  private static Random R = new Random();
-
-  private static String cacheName(UUID uuid, String name, String id) {
-    if (name.length() > 16) {
-      name = name.substring(0, 16);
-    }
-    if (NAME_CACHE.containsValue(name) && !NAME_CACHE.get(uuid).equals(name)) {
-      if (name.length() >= 15) {
-        name = name.substring(0, 14);
-      }
-      return cacheName(uuid,
-          name + CHARSET.charAt(R.nextInt(CHARSET.length())) + CHARSET.charAt(R.nextInt(CHARSET.length())), id);
-    }
-    NAME_CACHE.put(uuid, name);
-    return NAME_CACHE.get(uuid);
-  }
 
   public static String getUserData(UUID uuid) {
     if (uuid == null)
@@ -110,9 +90,11 @@ public class Bridge {
 
         String name = data[0];
         String id = data[1];
+        String loc = data[2];
 
         ID_CACHE.put(uuid, id);
-        return cacheName(uuid, name, id);
+        NAME_CACHE.put(uuid, name);
+        return NAME_CACHE.get(uuid);
       }
     } catch (Exception ex) {
       Bridge.LOGGER.error(ex.getMessage());
