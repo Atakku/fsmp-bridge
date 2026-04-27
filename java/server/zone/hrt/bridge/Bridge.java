@@ -94,20 +94,21 @@ public class Bridge {
 
         ID_CACHE.put(uuid, id);
         NAME_CACHE.put(uuid, name);
-        return NAME_CACHE.get(uuid);
+      } else {
+        ID_CACHE.put(uuid, null);
+        NAME_CACHE.put(uuid, null);
       }
     } catch (Exception ex) {
       Bridge.LOGGER.error(ex.getMessage());
       ex.printStackTrace();
-    }
-    if (!NAME_CACHE.containsKey(uuid)) {
+      ID_CACHE.put(uuid, null);
       NAME_CACHE.put(uuid, null);
     }
     return NAME_CACHE.get(uuid);
   }
 
   public Bridge(IEventBus bus) {
-    LOGGER.info("Initializing FSMP Bridge");
+    LOGGER.info("Initializing hrt.zone bridge");
     sendSystemText("🟡 Server is starting");
 
     NeoForge.EVENT_BUS.addListener(this::onServerStart);
