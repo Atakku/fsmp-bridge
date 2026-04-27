@@ -86,9 +86,8 @@ public class Bridge {
       URL url = new URI("https://hrt.zone/whitelist?uuid=" + uuid.toString()).toURL();
       HttpURLConnection conn = (HttpURLConnection) url.openConnection();
       conn.setRequestMethod("GET");
-      String text = IOUtils.toString(conn.getInputStream(), "UTF-8");
       if (conn.getResponseCode() == 200) {
-        String[] data = text.split("\n");
+        String[] data = IOUtils.toString(conn.getInputStream(), "UTF-8").split("\n");
 
         String name = data[0];
         String id = data[1];
@@ -98,9 +97,10 @@ public class Bridge {
         NAME_CACHE.put(uuid, name);
         return new Tuple<String, String>(NAME_CACHE.get(uuid), null);
       } else {
+        String err = IOUtils.toString(conn.getErrorStream(), "UTF-8");
         ID_CACHE.put(uuid, null);
         NAME_CACHE.put(uuid, null);
-        return new Tuple<String, String>(NAME_CACHE.get(uuid), text);
+        return new Tuple<String, String>(NAME_CACHE.get(uuid), err);
       }
     } catch (Exception ex) {
       Bridge.LOGGER.error(ex.getMessage());
