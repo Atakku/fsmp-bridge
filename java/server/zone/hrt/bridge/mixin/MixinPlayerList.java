@@ -12,6 +12,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.CommonListenerCookie;
 import net.minecraft.server.players.PlayerList;
 import net.minecraft.stats.Stats;
+import net.minecraft.util.Tuple;
 
 import com.mojang.authlib.GameProfile;
 import org.spongepowered.asm.mixin.Mixin;
@@ -25,12 +26,12 @@ import zone.hrt.bridge.Bridge;
 abstract class MixinPlayerList {
   @Inject(method = "Lnet/minecraft/server/players/PlayerList;canPlayerLogin(Ljava/net/SocketAddress;Lcom/mojang/authlib/GameProfile;)Lnet/minecraft/network/chat/Component;", at = @At("HEAD"), cancellable = true)
   private void canPlayerLogin(SocketAddress address, GameProfile profile, CallbackInfoReturnable<Component> cir) {
-    if (Bridge.getUserData(profile.getId()) != null) {
+    Tuple<String, String> data = Bridge.getUserData(profile.getId());
+    if (data.getA() != null) {
       return;
     }
 
-    cir.setReturnValue(Component.literal(
-        "You need to sign up on https://hrt.zone and be approved on the Discord server"));
+    cir.setReturnValue(Component.literal(data.getB()));
     cir.cancel();
   }
 

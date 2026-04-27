@@ -27,7 +27,7 @@ project(':server').dependencies {
 
   jarJar(implementation("club.minnced:discord-webhooks:$dw_version"){
     exclude module: 'slf4j-api'
-  }) 
+  })
 
   jarJar(implementation("com.squareup.okhttp3:okhttp:4.10.0"))
   jarJar(implementation("org.json:json:20210307"))

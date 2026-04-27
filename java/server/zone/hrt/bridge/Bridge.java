@@ -21,6 +21,7 @@ import net.minecraft.network.chat.PlayerChatMessage;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
+import net.minecraft.util.Tuple;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.GameRules;
@@ -78,15 +79,16 @@ public class Bridge {
   private static HashMap<UUID, String> NAME_CACHE = new HashMap<>();
   private static HashMap<UUID, String> ID_CACHE = new HashMap<>();
 
-  public static String getUserData(UUID uuid) {
+  public static Tuple<String, String> getUserData(UUID uuid) {
     if (uuid == null)
       return null;
     try {
       URL url = new URI("https://hrt.zone/whitelist?uuid=" + uuid.toString()).toURL();
       HttpURLConnection conn = (HttpURLConnection) url.openConnection();
       conn.setRequestMethod("GET");
+      String text = IOUtils.toString(conn.getInputStream(), "UTF-8");
       if (conn.getResponseCode() == 200) {
-        String[] data = IOUtils.toString(conn.getInputStream(), "UTF-8").split("\n");
+        String[] data = text.split("\n");
 
         String name = data[0];
         String id = data[1];
@@ -94,17 +96,19 @@ public class Bridge {
 
         ID_CACHE.put(uuid, id);
         NAME_CACHE.put(uuid, name);
+        return new Tuple<String, String>(NAME_CACHE.get(uuid), null);
       } else {
         ID_CACHE.put(uuid, null);
         NAME_CACHE.put(uuid, null);
+        return new Tuple<String, String>(NAME_CACHE.get(uuid), text);
       }
     } catch (Exception ex) {
       Bridge.LOGGER.error(ex.getMessage());
       ex.printStackTrace();
       ID_CACHE.put(uuid, null);
       NAME_CACHE.put(uuid, null);
+      return new Tuple<String, String>(NAME_CACHE.get(uuid), "Failed to connect to hrt.zone whitelist system. Please contact Aku about this issue.");
     }
-    return NAME_CACHE.get(uuid);
   }
 
   public Bridge(IEventBus bus) {

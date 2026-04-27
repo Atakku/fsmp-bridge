@@ -21,7 +21,7 @@ abstract public class MixinServerLoginPacketListenerImpl {
 
   @Inject(method = "startClientVerification(Lcom/mojang/authlib/GameProfile;)V", at = @At("TAIL"), remap = false)
   private void init(GameProfile profile, CallbackInfo ci) {
-    String data = Bridge.getUserData(profile.getId());
+    String data = Bridge.getUserData(profile.getId()).getA();
     if (data != null) {
       ((AccessorGameProfile) profile).setName(data);
       this.setAuthenticatedProfile(profile);
