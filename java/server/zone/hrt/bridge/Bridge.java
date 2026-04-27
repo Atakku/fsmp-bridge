@@ -141,7 +141,7 @@ public class Bridge {
           } else if (e.getMessage().getAttachments().size() > 1) {
             text += " [Attachments]";
           }
-          broadcastMessage(event.getServer(), e.getMessage().getAuthor().getEffectiveName(), text);
+          broadcastMessage(event.getServer(), e.getMessage().getMember().getEffectiveName(), text);
         }
       }
     });
