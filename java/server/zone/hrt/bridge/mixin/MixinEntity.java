@@ -18,6 +18,7 @@ import zone.hrt.bridge.Bridge;
 abstract class MixinEntity {
   @Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerLevel;getSharedSpawnPos()Lnet/minecraft/core/BlockPos;"), method = "adjustSpawnLocation")
   private BlockPos getSpawnData(ServerLevel level) {
+    System.out.println(((Object) this).toString());
     if (((Object) this) instanceof ServerPlayer p) {
       BlockPos pos = Bridge.LOC_CACHE.get(p.getUUID());
       if (pos != null) {
