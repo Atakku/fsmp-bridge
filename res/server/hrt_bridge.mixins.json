@@ -5,7 +5,6 @@
   "client": [],
   "mixins": [
     "AccessorGameProfile",
-    "MixinEntity",
     "MixinPlayerList",
     "MixinServerGamePacketListenerImpl",
     "MixinServerLoginPacketListenerImpl",
