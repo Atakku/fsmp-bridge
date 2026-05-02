@@ -14,6 +14,7 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.ChatType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.OutgoingChatMessage;
@@ -78,6 +79,7 @@ public class Bridge {
 
   private static HashMap<UUID, String> NAME_CACHE = new HashMap<>();
   private static HashMap<UUID, String> ID_CACHE = new HashMap<>();
+  public static HashMap<UUID, BlockPos> LOC_CACHE = new HashMap<>();
 
   public static Tuple<String, String> getUserData(UUID uuid) {
     if (uuid == null)
@@ -89,24 +91,23 @@ public class Bridge {
       if (conn.getResponseCode() == 200) {
         String[] data = IOUtils.toString(conn.getInputStream(), "UTF-8").split("\n");
 
-        String name = data[0];
-        String id = data[1];
-        String loc = data[2];
-
-        ID_CACHE.put(uuid, id);
-        NAME_CACHE.put(uuid, name);
+        NAME_CACHE.put(uuid, data[0]);
+        ID_CACHE.put(uuid, data[1]);
+        LOC_CACHE.put(uuid, new BlockPos(Integer.parseInt(data[2]), 0, Integer.parseInt(data[3])));
         return new Tuple<String, String>(NAME_CACHE.get(uuid), null);
       } else {
         String err = IOUtils.toString(conn.getErrorStream(), "UTF-8");
-        ID_CACHE.put(uuid, null);
         NAME_CACHE.put(uuid, null);
+        ID_CACHE.put(uuid, null);
+        LOC_CACHE.put(uuid, null);
         return new Tuple<String, String>(NAME_CACHE.get(uuid), err);
       }
     } catch (Exception ex) {
       Bridge.LOGGER.error(ex.getMessage());
       ex.printStackTrace();
-      ID_CACHE.put(uuid, null);
       NAME_CACHE.put(uuid, null);
+      ID_CACHE.put(uuid, null);
+      LOC_CACHE.put(uuid, null);
       return new Tuple<String, String>(NAME_CACHE.get(uuid), "Failed to connect to hrt.zone whitelist system. Please contact Aku about this issue.");
     }
   }
